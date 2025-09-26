@@ -37,27 +37,31 @@ class DNN16(nn.Module):
 #Training function train_model 
 #Takes in the dataset and saves model to path 
 
-def train_model(data_path="cancer_reg-1.csv",model_path="dnn16_model.pth",epochs=100,lr=0.001):
-    
-
-    # Load dataset
+def load_and_preprocess(data_path):
     df = pd.read_csv(data_path, encoding="latin-1")
 
-    # Drop problematic column
-    df = df.drop(columns=["PctSomeCol18_24"])
+    # Drop bad column (many missing values)
+    if "PctSomeCol18_24" in df.columns:
+        df = df.drop(columns=["PctSomeCol18_24"])
 
-    # Drop suspicious duplicate rows
+    # Drop placeholder duplicate rows
     duplicate_rows = ((df["avgAnnCount"] - 1962.66768).abs() < 1e-5) & \
                      ((df["incidenceRate"] - 453.549422).abs() < 1e-5)
     df = df[~duplicate_rows]
 
-    # Separate features and target
+    # Features / label
     X = df.drop(columns=["TARGET_deathRate", "Geography"])
-    Y = df["TARGET_deathRate"]
+    Y = df["TARGET_deathRate"].copy()
 
-    # One-hot encode categorical column
-    X = pd.get_dummies(X, columns=["binnedInc"])
+    # One-hot encode binnedInc if present
+    if "binnedInc" in X.columns:
+        X = pd.get_dummies(X, columns=["binnedInc"])
 
+    return X, Y
+
+def train_model(data_path="cancer_reg-1.csv",model_path="dnn16_model.pth",epochs=100,lr=0.001):
+    # Load dataset
+    X, Y = load_and_preprocess(data_path)
     # Train/val/test split (70/15/15)
     X_train, X_temp, Y_train, Y_temp = train_test_split(X, Y, test_size=0.3, random_state=42)
     X_val, X_test, Y_val, Y_test = train_test_split(X_temp, Y_temp, test_size=0.5, random_state=42)
