@@ -12,7 +12,7 @@ import time
 
 
 #Load Data
-df = pd.read_csv('HW1_Soham/cancer_reg-1.csv',encoding='latin-1')
+df = pd.read_csv('cancer_reg-1.csv',encoding='latin-1')
 pd.options.display.float_format = '{:.2f}'.format
 #print(df.head())
 #getting information about the dataframe 
@@ -88,7 +88,15 @@ end = time.time()
 print(f"Linear Regression Training started at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start))}")
 print(f"Linear Regression Training ended at   {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end))}")
 print(f"Linear Regression Total training time: {end - start:.4f} seconds")
+
+start = time.time()
 Y_pred = linreg.predict(X_val)
+end = time.time()
+
+print(f"Linear Regression Testing started at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start))}")
+print(f"Linear Regression Testing ended at   {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end))}")
+print(f"Linear Regression Total testing time: {end - start:.4f} seconds")
+
 
 #getting MSE and R2 value for validation set 
 mse_lin_reg = mean_squared_error(Y_val,Y_pred)
@@ -102,10 +110,11 @@ joblib.dump(linreg, "linear_regression.pkl")
 Y_test_predict = linreg.predict(X_test)
 #Calculate R2 score on test set 
 Test_r2 = r2_score(Y_test,Y_test_predict)
-print()
 print(f'Test R2 for Linear Regression:{Test_r2:.2f}')
+print()
 
 
+#Testing model 
 def test_model(model_path, X_test, Y_test):
     """
     Load a trained model from disk and evaluate it on the test set.
@@ -151,7 +160,9 @@ print(f"DNN-16 Training started at {time.strftime('%Y-%m-%d %H:%M:%S', time.loca
 print(f"DNN-16 Training ended at   {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end))}")
 print(f"DNN-16 Total training time: {end - start:.4f} seconds")
 # Validate
+start = time.time()
 Y_val_pred_dnn = dnn.predict(X_val_scaled)
+end = time.time()
 mse_val = mean_squared_error(Y_val,Y_val_pred_dnn)
 r2_val_dnn = r2_score(Y_val, Y_val_pred_dnn)
 print(f'Validation R2 for single layer neural network: {r2_val_dnn:.2f}')
@@ -160,6 +171,11 @@ print(f"Validation MSE for single layer neural network: {mse_val:.2f}")
 Y_test_pred_dnn = dnn.predict(X_test_scaled)
 r2_test_dnn = r2_score(Y_test, Y_test_pred_dnn)
 print(f'Test R2 for single layer neural network: {r2_test_dnn:.2f}')
+print(f"DNN-16 Testing started at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start))}")
+print(f"DNN-16 Testing ended at   {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end))}")
+print(f"DNN-16 Total testing time: {end - start:.4f} seconds")
+print()
+
 
 loss_values_dnn = dnn.loss_curve_
 epochs = range(1, len(loss_values_dnn) + 1)
@@ -200,16 +216,23 @@ print(f"DNN-30-8 Total training time: {end - start:.4f} seconds")
 
 
 # Predict on validation set
+
 Y_val_pred_dnn_two = dnn_two_layers.predict(X_val_scaled)
+
 mse_val_two = mean_squared_error(Y_val, Y_val_pred_dnn_two)
 r2_val_two = r2_score(Y_val, Y_val_pred_dnn_two)
 print(f'Validation MSE for DNN of two layers: {mse_val_two:.2f}, R^2: {r2_val_two:.2f}')
 
 # Predict on test set
+start = time.time()
 Y_test_pred_dnn_two = dnn_two_layers.predict(X_test_scaled)
+end= time.time()
 r2_test_dnn_two = r2_score(Y_test, Y_test_pred_dnn_two)
 print(f'Test R^2 for DNN of two layers : {r2_test_dnn_two:.2f}')
-
+print(f"DNN-30-8 Testing started at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start))}")
+print(f"DNN-30-8 Testing ended at   {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end))}")
+print(f"DNN-30-8 Total testing time: {end - start:.4f} seconds")
+print()
 
 loss_values_dnn_two = dnn_two_layers.loss_curve_
 epochs = range(1, len(loss_values_dnn_two) + 1)
@@ -251,9 +274,15 @@ mse_val_three = mean_squared_error(Y_val, Y_val_pred_dnn_three)
 r2_val_three = r2_score(Y_val,Y_val_pred_dnn_three)
 print(f"Validation MSE for DNN of three layers: {mse_val_three:.2f}, R^2:{r2_val_three:.2f}")
 
+start = time.time()
 Y_test_pred_dnn_three = dnn_three_layers.predict(X_test_scaled)
+end = time.time()
 r2_test_dnn_three = r2_score(Y_test,Y_test_pred_dnn_three)
 print(f'Test R^2 for DNN of three layers: {r2_test_dnn_three:.2f}')
+print(f"DNN-30-16-8 Testing started at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start))}")
+print(f"DNN-30-16-8 Testing ended at   {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end))}")
+print(f"DNN-30-16-8 Total testing time: {end - start:.4f} seconds")
+print()
 
 loss_values = dnn_three_layers.loss_curve_
 epochs = range(1, len(loss_values) + 1)
@@ -302,9 +331,15 @@ r2_val_four = r2_score(Y_val, Y_val_pred_dnn_four)
 print(f"Validation MSE for DNN of four layers: {mse_val_four:.2f}, R^2:{r2_val_four:.2f}")
 
 # Predict on test set
+start = time.time()
 Y_test_pred_dnn_four = dnn_four_layers.predict(X_test_scaled)
+end = time.time()
 r2_test_dnn_four = r2_score(Y_test, Y_test_pred_dnn_four)
 print(f'Test R^2 for DNN of four layers: {r2_test_dnn_four:.2f}')
+print(f"DNN-30-16-8-4 Testing started at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start))}")
+print(f"DNN-30-16-8-4 Testing ended at   {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end))}")
+print(f"DNN-30-16-8-4 Total testing time: {end - start:.4f} seconds")
+print()
 
 
 loss_values_dnn_four = dnn_four_layers.loss_curve_
